@@ -1,6 +1,16 @@
 const apiURL =
   "https://api.open-meteo.com/v1/forecast?latitude=43.5789&longitude=-79.6583&daily=sunrise,sunset,moon_phase&hourly=temperature_2m&current=temperature_2m,is_day,precipitation,rain,showers,snowfall,cloud_cover&timezone=auto";
 
+const radio = document.querySelector(".radio-image");
+
+const tracks = [
+    "sounds/LofiTrackOne.mp3",
+    "sounds/LofiTrackTwo.mp3",
+    "sounds/LofiTrackThree.mp3"
+];
+
+
+//WEATHER API DATA 
   async function getWeather() {
     try {
         const response = await fetch(apiURL);
@@ -30,6 +40,8 @@ const apiURL =
 }
 
 
+//TIME DATA
+
 function updateClock(timezone) {
 
     function displayTime() {
@@ -58,6 +70,27 @@ function updateClock(timezone) {
     setInterval(displayTime, 1000);
 }
 
-
-
 getWeather();
+
+//RADIO
+let currentTrack = -1;
+let audio = null;
+
+radio.addEventListener("click", function() {
+
+    if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+    }
+
+    currentTrack++;
+
+    if (currentTrack >= tracks.length) {
+        currentTrack = -1;
+        audio = null;
+        return;
+    }
+    audio = new Audio(tracks[currentTrack]);
+    audio.play();
+
+});

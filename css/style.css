@@ -130,15 +130,25 @@
     width: 100%;
     display: block;
     filter: drop-shadow(3px 5px 6px rgba(0, 0, 0, 0.5));
+    cursor: pointer;
+    transition: filter 0.3s ease;
+}
+
+.radio-image:hover {
+    filter:
+        drop-shadow(0 0 2px white)
+        drop-shadow(0 0 6px white)
+        drop-shadow(0 0 2px rgba(255, 255, 255, 0.6));
+
 }
 
 /* Laptop */
 .laptop {
     position: absolute;
-    width: 30%;
+    width: 34%;
     height:auto;
-    bottom: 16%;
-    right: 37%;
+    bottom: 14%;
+    right: 35%;
     z-index: 3;
 }
 
