@@ -9,6 +9,8 @@ const tracks = [
     "sounds/LofiTrackThree.mp3"
 ];
 
+const ambienceButton = document.getElementById("ambience-toggle");
+
 
 //WEATHER API DATA 
   async function getWeather() {
@@ -16,6 +18,11 @@ const tracks = [
         const response = await fetch(apiURL);
         const data = await response.json();
         const current = data.current;
+        latestWeather = current;
+
+        if (ambienceEnabled) {
+            updateAmbience(current);
+        }
 
         //this is just for checking the info, delete later 
         updateClock(data.timezone);
@@ -72,6 +79,7 @@ function updateClock(timezone) {
 
 getWeather();
 
+
 //RADIO
 let currentTrack = -1;
 let audio = null;
@@ -91,6 +99,107 @@ radio.addEventListener("click", function() {
         return;
     }
     audio = new Audio(tracks[currentTrack]);
+    audio.loop = true;
+    audio.volume = .3;
     audio.play();
 
 });
+
+
+// AMBIENCE (SOUNDS) BASED ON WEATHER AND TIME OF DAY 
+
+//check time of day
+function getTimeOfDay() {
+    const hour = new Date().getHours();
+
+    if (hour >= 5 && hour < 12) {
+        return "morning";
+    } 
+
+    if (hour >= 12 && hour < 21) {
+        return "midday";
+    } 
+
+    return "night";
+}
+
+//check weather 
+function getWeatherCondition(current) {
+
+    if (current.snowfall > 0) {
+        return "snow";
+    }
+
+    if (current.rain > 0 || current.showers > 0) {
+        return "rain";
+    }
+
+    return "clear";
+}
+
+let ambienceEnabled = false;
+let latestWeather = null;
+let ambienceAudio = [];
+
+
+// Ambience button
+ambienceButton.addEventListener("click", function() {
+
+    ambienceEnabled = !ambienceEnabled;
+
+    if (ambienceEnabled && latestWeather) {
+
+        const time = getTimeOfDay();
+        const weather = getWeatherCondition(latestWeather);
+
+
+        //Testing sounds 
+        // const time = "night";
+        // const weather = "rain";
+
+
+        // TIME SOUNDS
+        if (time === "morning") {
+            playSound("sounds/birds.mp3", 0.15);
+            playSound("sounds/wind.mp3", 0.15);
+        }
+        else if (time === "midday") {
+            playSound("sounds/birds.mp3", 0.25);
+            playSound("sounds/wind.mp3", 0.15);
+        }
+        else if (time === "night") {
+            playSound("sounds/crickets.mp3", 0.05);
+            playSound("sounds/wind.mp3", 0.15);
+        }
+
+
+        // WEATHER SOUNDS
+        if (weather === "rain") {
+            playSound("sounds/rain.mp3", 0.4);
+            
+        }
+        else if (weather === "snow") {
+            playSound("sounds/snowfall.mp3", 0.3);
+        }
+    }
+
+    else {
+        ambienceAudio.forEach(audio => audio.pause());
+        ambienceAudio = [];
+    }
+
+    ambienceButton.textContent = ambienceEnabled
+        ? "Turn ambience off"
+        : "Turn ambience on";
+});
+
+function playSound(file, volume) {
+
+    const audio = new Audio(file);
+
+    audio.volume = volume;
+    audio.loop = true;
+    audio.play();
+
+    ambienceAudio.push(audio);
+}
