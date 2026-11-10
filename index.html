@@ -55,8 +55,61 @@
               <!-- Laptop -->
             <div class="laptop">
                 <img src="images/laptop.png" class="laptop-image">
-            </div>
 
+                <!--Pomodoro Timer-->
+                <div class="pomodoro-screen">
+
+                    <div class="pomodoro-header">
+                        <span>STUDY MODE</span>
+                        <span id="timer-status">READY</span>
+                    </div>
+
+                    <div class="timer-modes">
+                        <button class="mode-btn active" data-mode="focus">Focus</button>
+                        <button class="mode-btn" data-mode="short">Short Break</button>
+                        <button class="mode-btn" data-mode="long">Long Break</button>
+                    </div>
+
+                    <div id="timer-display">25:00</div>
+
+                    <div class="timer-progress">
+                        <div id="timer-progress-fill"></div>
+                    </div>
+
+                    <div class="timer-controls">
+                        <button id="start-pause">START</button>
+                        <button id="reset-timer">RESET</button>
+                        <button id="settings-toggle">⚙</button>
+                    </div>
+
+
+                    <!--Timer Settings-->
+                    <div id="timer-settings" class="hidden">
+                        <div class="setting-row">
+                            <span>Focus</span>
+                            <button class="duration-btn" data-mode="focus" data-change="-1">−</button>
+                            <span id="focus-duration">25</span>
+                            <button class="duration-btn" data-mode="focus" data-change="1">+</button>
+                        </div>
+
+                        <div class="setting-row">
+                            <span>Short Break</span>
+                            <button class="duration-btn" data-mode="short" data-change="-1">−</button>
+                            <span id="short-duration">5</span>
+                            <button class="duration-btn" data-mode="short" data-change="1">+</button>
+                        </div>
+
+                        <div class="setting-row">
+                            <span>Long Break</span>
+                            <button class="duration-btn" data-mode="long" data-change="-1">−</button>
+                            <span id="long-duration">15</span>
+                            <button class="duration-btn" data-mode="long" data-change="1">+</button>
+                        </div>
+
+                        <button id="close-settings">DONE</button>
+                    </div>
+                </div>
+            </div>
 
             <!-- Desk -->
             <img src="images/desk.png" class="desk">

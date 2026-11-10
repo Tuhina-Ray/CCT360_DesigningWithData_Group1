@@ -203,3 +203,234 @@ function playSound(file, volume) {
 
     ambienceAudio.push(audio);
 }
+
+
+
+//POMODORO TIMER//
+const timerDurations = {
+    focus: 25,
+    short: 5,
+    long: 15
+};
+
+let currentMode = "focus";
+
+let remainingSeconds = timerDurations.focus * 60;
+let timerInterval = null;
+let timerRunning = false;
+
+const timerDisplay = document.getElementById("timer-display");
+const timerStatus = document.getElementById("timer-status");
+const startPauseBtn = document.getElementById("start-pause");
+const resetBtn = document.getElementById("reset-timer");
+const progressFill = document.getElementById("timer-progress-fill");
+
+const settingsToggle = document.getElementById("settings-toggle");
+const settingsPanel = document.getElementById("timer-settings");
+const closeSettings = document.getElementById("close-settings");
+
+const alarmSound = new Audio("sounds/alarm.mp3");
+alarmSound.volume = 0.5;
+
+function updateTimerDisplay() {
+
+    const minutes = Math.floor(remainingSeconds / 60);
+    const seconds = remainingSeconds % 60;
+
+    timerDisplay.textContent =
+        String(minutes).padStart(2, "0") + ":" +
+        String(seconds).padStart(2, "0");
+
+    
+    const totalSeconds = timerDurations[currentMode] * 60;
+
+    const progress =
+        ((totalSeconds - remainingSeconds) / totalSeconds) * 100;
+
+    progressFill.style.width = progress + "%";
+}
+
+
+
+function updateTimerStatus() {
+
+    if (timerRunning) {
+        timerStatus.textContent = "RUNNING";
+    }
+
+    else {
+        timerStatus.textContent = "PAUSED";
+    }
+}
+
+
+function startTimer() {
+
+    if (timerRunning) return;
+
+    if (remainingSeconds <= 0) return;
+
+    timerRunning = true;
+
+    startPauseBtn.textContent = "PAUSE";
+    updateTimerStatus();
+
+    timerInterval = setInterval(function() {
+
+        remainingSeconds--;
+
+        updateTimerDisplay();
+
+        
+        if (remainingSeconds <= 0) {
+
+            clearInterval(timerInterval);
+
+            timerRunning = false;
+
+            startPauseBtn.textContent = "START";
+
+            timerStatus.textContent = "COMPLETED";
+
+            alarmSound.currentTime = 0;
+
+            alarmSound.play().catch(error => {
+                console.log("Alarm playback was blocked:", error);
+            });
+
+        }
+
+    }, 1000);
+}
+
+
+function pauseTimer() {
+
+    clearInterval(timerInterval);
+
+    timerRunning = false;
+
+    startPauseBtn.textContent = "RESUME";
+
+    updateTimerStatus();
+}
+
+
+startPauseBtn.addEventListener("click", function() {
+
+    alarmSound.pause();
+    alarmSound.currentTime = 0;
+
+    if (timerRunning) {
+        pauseTimer();
+    }
+
+    else {
+        startTimer();
+    }
+
+});
+
+
+resetBtn.addEventListener("click", function() {
+
+
+    clearInterval(timerInterval);
+
+    alarmSound.pause();
+    alarmSound.currentTime = 0;
+
+    timerRunning = false;
+
+    remainingSeconds = timerDurations[currentMode] * 60;
+
+    startPauseBtn.textContent = "START";
+
+    timerStatus.textContent = "READY";
+
+    updateTimerDisplay();
+
+});
+
+document.querySelectorAll(".mode-btn").forEach(button => {
+
+    button.addEventListener("click", function() {
+
+        alarmSound.pause();
+        alarmSound.currentTime = 0;
+        clearInterval(timerInterval);
+
+        timerRunning = false;
+
+        currentMode = this.dataset.mode;
+
+        remainingSeconds = timerDurations[currentMode] * 60;
+
+        document.querySelectorAll(".mode-btn").forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        this.classList.add("active");
+
+        startPauseBtn.textContent = "START";
+
+        timerStatus.textContent = "READY";
+
+        updateTimerDisplay();
+
+    });
+
+});
+
+settingsToggle.addEventListener("click", function() {
+
+    alarmSound.pause();
+    alarmSound.currentTime = 0;
+    settingsPanel.classList.remove("hidden");
+
+});
+
+
+closeSettings.addEventListener("click", function() {
+
+    settingsPanel.classList.add("hidden");
+
+});
+
+document.querySelectorAll(".duration-btn").forEach(button => {
+
+    button.addEventListener("click", function() {
+
+        const mode = this.dataset.mode;
+        const change = Number(this.dataset.change);
+
+        timerDurations[mode] = Math.max(
+            1,
+            Math.min(120, timerDurations[mode] + change)
+        );
+
+        document.getElementById(mode + "-duration").textContent =
+            timerDurations[mode];
+
+        
+        if (mode === currentMode) {
+
+            clearInterval(timerInterval);
+
+            timerRunning = false;
+
+            remainingSeconds = timerDurations[currentMode] * 60;
+
+            startPauseBtn.textContent = "START";
+
+            timerStatus.textContent = "READY";
+
+            updateTimerDisplay();
+
+        }
+
+    });
+
+});
+
+updateTimerDisplay();

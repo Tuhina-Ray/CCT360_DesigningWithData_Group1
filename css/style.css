@@ -168,3 +168,172 @@
     height:auto;
     z-index: 2;
 }
+
+
+/* Pomodoro Timer */
+.pomodoro-screen {
+    position: absolute;
+
+    /* Position inside laptop screen */
+    top: 26.5%;
+    left: 31.3%;
+    width: 36.2%;
+    height: 36.2%;
+
+    background: #29251F;
+    color: #F3E8D5;
+
+    z-index: 4;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+
+    padding: 3%;
+    font-family: 'Courier New', monospace;
+
+    overflow: hidden;
+}
+
+/* Header */
+
+.pomodoro-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-size: clamp(4px, 0.65vw, 8px);
+    color: #C9B89B;
+    font-weight: bold;
+}
+
+/* Focus / break buttons */
+
+.timer-modes {
+    display: flex;
+    justify-content: center;
+    gap: 3%;
+    width: 100%;
+}
+
+.mode-btn {
+    border: none;
+    background: #554A3D;
+    color: #E8D9C0;
+
+    font-size: clamp(4px, 0.7vw, 9px);
+    padding: 3% 4%;
+
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.mode-btn.active {
+    background: #C5A77D;
+    color: #29251F;
+}
+
+/* Countdown */
+
+#timer-display {
+    font-size: clamp(12px, 2.1vw, 25px);
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #F5E8D2;
+}
+
+/* Progress bar */
+
+.timer-progress {
+    width: 90%;
+    height: 4px;
+    background: #554A3D;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#timer-progress-fill {
+    width: 0%;
+    height: 100%;
+    background: #D2B48C;
+    transition: width 0.3s linear;
+}
+
+/* Timer controls */
+
+.timer-controls {
+    display: flex;
+    justify-content: center;
+    gap: 4%;
+    width: 100%;
+}
+
+.timer-controls button {
+    background: #B69A72;
+    color: #29251F;
+
+    border: none;
+    border-radius: 3px;
+
+    padding: 3% 5%;
+    font-family: inherit;
+    font-size: clamp(4px, 0.65vw, 8px);
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.timer-controls button:hover,
+.mode-btn:hover {
+    filter: brightness(1.2);
+}
+
+/* Settings panel */
+
+#timer-settings {
+    position: absolute;
+    inset: 0;
+
+    background: #29251F;
+    padding: 5%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5%;
+
+    font-size: clamp(5px, 0.7vw, 9px);
+}
+
+#timer-settings.hidden {
+    display: none;
+}
+
+.setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3%;
+}
+
+.setting-row span:first-child {
+    flex: 1;
+}
+
+.duration-btn,
+#close-settings {
+    border: none;
+    background: #B69A72;
+    color: #29251F;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 3px;
+    padding: 2% 5%;
+    font-size: inherit;
+}
+
+#close-settings {
+    align-self: center;
+    padding: 3% 10%;
+}
