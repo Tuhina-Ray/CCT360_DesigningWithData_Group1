@@ -24,22 +24,11 @@ const ambienceButton = document.getElementById("ambience-toggle");
             updateAmbience(current);
         }
 
-        //this is just for checking the info, delete later 
+        // update clock
         updateClock(data.timezone);
 
-        document.getElementById("temperature").textContent = "Temperature: " + current.temperature_2m + " °C";
-
-        document.getElementById("daylight").textContent = "Day or night: " + (current.is_day === 1 ? "Day" : "Night");
-
-        document.getElementById("precipitation").textContent = "Precipitation: " + current.precipitation + " mm";
-
-        document.getElementById("rain").textContent = "Rain: " + current.rain + " mm";
-
-        document.getElementById("showers").textContent = "Showers: " + current.showers + " mm";
-
-        document.getElementById("snowfall").textContent = "Snowfall: " + current.snowfall + " cm";
-
-        document.getElementById("cloud-cover").textContent = "Cloud cover: " + current.cloud_cover + "%";
+        // update weather animations
+        updateWeatherScene(current, data.daily);
 
     } catch (error) {
         console.error("Error retrieving weather data:", error);
@@ -108,7 +97,7 @@ radio.addEventListener("click", function() {
 
 // AMBIENCE (SOUNDS) BASED ON WEATHER AND TIME OF DAY 
 
-//check time of day
+//check time of day --> to set ambience
 function getTimeOfDay() {
     const hour = new Date().getHours();
 
@@ -119,6 +108,33 @@ function getTimeOfDay() {
     if (hour >= 12 && hour < 21) {
         return "midday";
     } 
+
+    return "night";
+}
+
+//get time of the day for weather visuals
+function getTimePhase(current, daily) {
+    const now = new Date(current.time);
+
+    const sunrise = new Date(daily.sunrise[0]);
+    const sunset = new Date(daily.sunset[0]);
+
+    const minsUntilSunrise = (sunrise - now) / 60000;  // positive: event is still coming; 0: happening; negative: event has passed
+    const minsUntilSunset = (sunset - now) / 60000;
+
+    // 30 mins before/after sunrise
+    if (minsUntilSunrise >= -30 && minsUntilSunrise <= 30) {
+        return "sunrise";
+    }
+
+    // 30 mins before/after sunset
+    if (minsUntilSunset >= -30 && minsUntilSunset <= 30) {
+        return "sunset";
+    }
+
+    if (current.is_day === 1) {
+        return "day";
+    }
 
     return "night";
 }
@@ -134,7 +150,101 @@ function getWeatherCondition(current) {
         return "rain";
     }
 
+    if (current.cloud_cover >= 60) {
+        return "cloudy"
+    }
+
     return "clear";
+}
+
+// WEATHER VISUALS
+function updateWeatherScene(current, daily) {
+    const weatherView = document.getElementById("weather-view");
+
+    const weather = getWeatherCondition(current);
+    const time = getTimePhase(current, daily);
+    // testing
+    // const weather = "snow";
+    // const time = "sunrise";
+
+    // scene conditions
+    weatherView.dataset.weather = weather;  // html attribute: data-weather
+    weatherView.dataset.time = time;  // data-time
+
+    // clear any previous animations
+    weatherView.innerHTML = "";
+
+    // sun
+    if (time !== "night") {
+        const sun = document.createElement("div");
+        sun.className = "sun";
+
+        weatherView.appendChild(sun);
+    }
+
+    // moon and stars
+    if (time === "night") {
+        const moon = document.createElement("div");
+        moon.className = "moon";
+
+        weatherView.appendChild(moon);
+
+        // create stars
+        for (let i = 0; i < 30; i++) {
+            const star = document.createElement("div");
+            star.className = "star";
+
+            star.style.left = Math.random() * 100 + "%";
+            star.style.top = Math.random() * 65 + "%";
+
+            star.style.animationDelay =
+                Math.random() * 3 + "s";
+
+            weatherView.appendChild(star);
+        }
+    }
+
+    // clouds
+    if (weather === "cloudy" || weather === "rain" || weather === "snow" || current.cloud_cover >= 25) {
+        for (let i = 0; i < 2; i++) {
+            const cloud = document.createElement("div");
+            cloud.className = "cloud " + (i === 0 ? "one" : "two");
+
+            weatherView.appendChild(cloud);
+        }
+    }
+
+    // rain
+    if (weather === "rain") {
+        for (let i = 0; i < 65; i++) {
+            const drop = document.createElement("div");
+            drop.className = "raindrop";
+
+            drop.style.left = Math.random() * 100 + "%";
+            drop.style.animationDuration = (0.4 + Math.random() * 0.7) + "s";
+            drop.style.animationDelay = Math.random() * 2 + "s";
+
+            weatherView.appendChild(drop);
+        }
+    }
+    
+    // snow
+    if (weather === "snow") {
+        for (let i = 0; i < 35; i++) {
+            const snow = document.createElement("div");
+
+            snow.className = "snowflake";
+            snow.textContent = "❄";
+
+            snow.style.left = Math.random() * 100 + "%";
+            snow.style.setProperty("--fall-distance", weatherView.clientHeight + 30 + "px");
+            snow.style.animationDuration = (4 + Math.random() * 6) + "s";
+            snow.style.animationDelay = Math.random() * 5 + "s";
+            snow.style.fontSize = (7 + Math.random() * 9) + "px";
+
+            weatherView.appendChild(snow);
+        }
+    }
 }
 
 let ambienceEnabled = false;
@@ -155,7 +265,7 @@ ambienceButton.addEventListener("click", function() {
 
         //Testing sounds 
         // const time = "night";
-        // const weather = "rain";
+        // const weather = "snow";
 
 
         // TIME SOUNDS
