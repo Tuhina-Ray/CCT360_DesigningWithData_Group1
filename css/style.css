@@ -18,6 +18,20 @@
     background-repeat: no-repeat;
 }
 
+#ambience-toggle {
+    
+    border: none;
+    background: #554A3D;
+    color: #E8D9C0;
+
+    font-size: 1 cqw;
+    padding: 2%;
+    margin:2%;
+
+    border-radius: 3px;
+    cursor: pointer;
+}
+
 /* Window container */
 .window {
     position: absolute;
