@@ -544,3 +544,118 @@ document.querySelectorAll(".duration-btn").forEach(button => {
 });
 
 updateTimerDisplay();
+
+
+
+/* DECOR INTERACTIONS*/
+
+const pageSound = new Audio("sounds/page-flip.mp3");
+const plantSound = new Audio("sounds/plant-rustle.mp3");
+const lampSound = new Audio("sounds/lamp-click.mp3");
+const ledSound = new Audio("sounds/lamp-click.mp3");
+
+
+// QUOTE OF THE DAY
+
+const book = document.getElementById("book");
+const quoteOverlay = document.getElementById("quote-overlay");
+const quoteText = document.getElementById("daily-quote");
+const closeNote = document.getElementById("close-note");
+
+const quotes = [
+    "It always seems impossible until it's done.",
+    "Small steps every day lead to big changes.",
+    "You are allowed to slow down and take a breath.",
+    "Believe you can and you're halfway there.",
+    "Progress, not perfection.",
+    "The secret of getting ahead is getting started.",
+    "Rest is productive too.",
+    "You don't have to have it all figured out today."
+];
+
+// Select a quote based on the date
+function getDailyQuote() {
+    const today = new Date();
+    const dayNumber = Math.floor(
+        today.getTime() / (1000 * 60 * 60 * 24)
+    );
+
+    return quotes[dayNumber % quotes.length];
+}
+
+book.addEventListener("click", function() {
+
+    pageSound.currentTime = 0;
+    pageSound.play();
+
+    quoteText.textContent = '"' + getDailyQuote() + '"';
+
+    quoteOverlay.classList.remove("hidden");
+});
+
+closeNote.addEventListener("click", function() {
+    quoteOverlay.classList.add("hidden");
+});
+
+
+// PLANT - SWAY 
+
+const plant = document.getElementById("plant");
+
+plant.addEventListener("click", function() {
+
+    plantSound.currentTime = 0;
+    plantSound.play();
+
+    plant.classList.remove("sway");
+
+    void plant.offsetWidth;
+
+    plant.classList.add("sway");
+});
+
+
+// LAMP - ON/OFF GLOW
+
+const lamp = document.getElementById("lamp");
+const lampGlow = document.getElementById("lamp-glow");
+
+let lampOn = false;
+
+lamp.addEventListener("click", function() {
+
+    lampOn = !lampOn;
+
+    lampSound.currentTime = 0;
+    lampSound.play();
+
+    lampGlow.classList.toggle("active", lampOn);
+
+    
+    document.querySelector(".scene").classList.toggle(
+        "lamp-on",
+        lampOn
+    );
+});
+
+
+// LED - DISCO LIGHT
+
+const led = document.getElementById("led");
+const roomLighting = document.getElementById("room-lighting");
+
+let ledOn = false;
+
+led.addEventListener("click", function() {
+
+    ledOn = !ledOn;
+
+    ledSound.currentTime = 0;
+    ledSound.play();
+
+    roomLighting.classList.toggle("active", ledOn);
+
+    led.src = ledOn
+        ? "images/led-on.png"
+        : "images/led-off.png";
+});
