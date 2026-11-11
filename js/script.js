@@ -644,3 +644,14 @@ led.addEventListener("click", function() {
         ? "images/led-on.png"
         : "images/led-off.png";
 });
+
+//CHAIR 
+
+const chair = document.getElementById("chair");
+const chairSound = new Audio("sounds/swoosh.mp3");
+
+chair.addEventListener("click", function() {
+    chair.classList.toggle("moved");
+    chairSound.volume = 0.3;
+    chairSound.play();
+});

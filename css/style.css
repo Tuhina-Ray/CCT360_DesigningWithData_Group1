@@ -44,6 +44,25 @@
     
 }
 
+/*chair*/
+
+#chair {
+    position: absolute;
+    width: 30%;
+    bottom: -28%;
+    left: 0;
+    transform: translateX(170%);
+    height:auto;
+    cursor: pointer;
+    z-index: 4;
+
+    transition: transform 0.5s ease;
+}
+
+#chair.moved {
+    transform: translateX(100px) scaleX(-1);
+}
+
 /* Window frame */
 .window-frame {
     position: absolute;
