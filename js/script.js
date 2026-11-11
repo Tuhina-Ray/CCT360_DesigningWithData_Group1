@@ -20,6 +20,9 @@ const ambienceButton = document.getElementById("ambience-toggle");
         const current = data.current;
         latestWeather = current;
 
+        latestCurrent = current;
+        latestDaily = data.daily;
+
         if (ambienceEnabled) {
             updateAmbience(current);
         }
@@ -95,23 +98,6 @@ radio.addEventListener("click", function() {
 });
 
 
-// AMBIENCE (SOUNDS) BASED ON WEATHER AND TIME OF DAY 
-
-//check time of day --> to set ambience
-function getTimeOfDay() {
-    const hour = new Date().getHours();
-
-    if (hour >= 5 && hour < 12) {
-        return "morning";
-    } 
-
-    if (hour >= 12 && hour < 21) {
-        return "midday";
-    } 
-
-    return "night";
-}
-
 //get time of the day for weather visuals
 function getTimePhase(current, daily) {
     const now = new Date(current.time);
@@ -164,7 +150,7 @@ function updateWeatherScene(current, daily) {
     const weather = getWeatherCondition(current);
     const time = getTimePhase(current, daily);
     // testing
-    // const weather = "snow";
+    // const weather = "clear";
     // const time = "sunrise";
 
     // scene conditions
@@ -251,33 +237,32 @@ let ambienceEnabled = false;
 let latestWeather = null;
 let ambienceAudio = [];
 
+let latestCurrent = null;
+let latestDaily = null;
+
 
 // Ambience button
 ambienceButton.addEventListener("click", function() {
 
     ambienceEnabled = !ambienceEnabled;
 
-    if (ambienceEnabled && latestWeather) {
+    if (ambienceEnabled && latestCurrent && latestDaily) {
 
-        const time = getTimeOfDay();
-        const weather = getWeatherCondition(latestWeather);
+        const time = getTimePhase(latestCurrent, latestDaily);
+        const weather = getWeatherCondition(latestCurrent);
 
 
         //Testing sounds 
-        // const time = "night";
-        // const weather = "snow";
+        // const time = "morning";
+        // const weather = "clear";
 
 
         // TIME SOUNDS
-        if (time === "morning") {
+        if (time === "day" || time === "sunrise") {
             playSound("sounds/birds.mp3", 0.15);
             playSound("sounds/wind.mp3", 0.15);
         }
-        else if (time === "midday") {
-            playSound("sounds/birds.mp3", 0.25);
-            playSound("sounds/wind.mp3", 0.15);
-        }
-        else if (time === "night") {
+        else if (time === "night" || time === "sunset") {
             playSound("sounds/crickets.mp3", 0.05);
             playSound("sounds/wind.mp3", 0.15);
         }
